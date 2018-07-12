@@ -32,7 +32,21 @@ extension CodeDetectorViewController {
 // MARK: - AVCaptureMetadataOutputObjectsDelegate
 extension CodeDetectorViewController: AVCaptureMetadataOutputObjectsDelegate {
   public func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
+    if metadataObjectsOverlayLayersDrawingSemaphore.wait(timeout: .now()) == .success {
+      DispatchQueue.main.async {
+        self.removeMetadataObjectOverlayLayers()
 
+        var metadataObjectOverlayLayers = [MetadataObjectLayer]()
+        for metadataObject in metadataObjects {
+          let metadataObjectOverlayLayer = self.createMetadataObjectOverlayWithMetadataObject(metadataObject)
+          metadataObjectOverlayLayers.append(metadataObjectOverlayLayer)
+        }
+
+        self.addMetadataObjectOverlayLayersToVideoPreviewView(metadataObjectOverlayLayers)
+
+        self.metadataObjectsOverlayLayersDrawingSemaphore.signal()
+      }
+    }
   }
 }
 // MARK: - UIViewController
@@ -428,8 +442,7 @@ extension CodeDetectorViewController {
     }
   }
 
-  @objc
-  func sessionInterruptionEnded(notification: NSNotification) {
+  @objc func sessionInterruptionEnded(notification: NSNotification) {
     delegate?.codeDetector(self, configurationFailed: "Capture session interruption ended")
   }
 
