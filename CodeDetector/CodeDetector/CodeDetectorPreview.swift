@@ -159,7 +159,7 @@ open class CodeDetectorPreview: UIView {
 // MARK: - Customize
 extension CodeDetectorPreview {
   private func commonInit() {
-    maskLayer.fillRule = kCAFillRuleEvenOdd
+    maskLayer.fillRule = .evenOdd
     maskLayer.fillColor = UIColor.black.cgColor
     maskLayer.opacity = 0.6
     layer.addSublayer(maskLayer)

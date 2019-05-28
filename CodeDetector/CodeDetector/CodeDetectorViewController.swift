@@ -455,7 +455,7 @@ extension CodeDetectorViewController {
     // Create the initial metadata object overlay layer that can be used for either machine readable codes or faces.
     let metadataObjectOverlayLayer = MetadataObjectLayer()
     metadataObjectOverlayLayer.metadataObject = transformedMetadataObject
-    metadataObjectOverlayLayer.lineJoin = kCALineJoinRound
+    metadataObjectOverlayLayer.lineJoin = .round
     metadataObjectOverlayLayer.lineWidth = 7.0
     metadataObjectOverlayLayer.strokeColor = view.tintColor.withAlphaComponent(0.7).cgColor
     metadataObjectOverlayLayer.fillColor = view.tintColor.withAlphaComponent(0.3).cgColor
@@ -540,6 +540,8 @@ extension CodeDetectorViewController {
         preferredPosition = .back
       case .back:
         preferredPosition = .front
+      @unknown default:
+        fatalError("Unkown AVCaptureDevice.Position, rawValue = \(currentPosition.rawValue)")
       }
 
       let devices: [AVCaptureDevice]
